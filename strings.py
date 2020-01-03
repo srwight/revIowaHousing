@@ -9,7 +9,7 @@ Created on Fri Jan  3 13:12:23 2020
 #add an import string for your file.
 import wights
 import kwokh
-import avetisyang
+import avetisyang, ragygad
 import hilld, jacksonb, ahtouw, senehd, nyamaog, davism, winegardner, paisleyc, cloudk, mikeGrillo, hendersond, sriquim, endere
 
 #Print the return of your function when passed a 1 and a 2:
@@ -45,3 +45,5 @@ print(sriquim.sriquim(1))
 print(sriquim.sriquim(2))
 print(endere.endere(1))
 print(endere.endere(2))
+print(ragygad.ragyg(1))
+print(ragygad.ragyg(2))
