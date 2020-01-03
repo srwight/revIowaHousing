@@ -18,4 +18,4 @@ def sriquim(a:int)->str:
         return "You passed a 2"
     else:
         return "That is not a valid input"
-    
+
