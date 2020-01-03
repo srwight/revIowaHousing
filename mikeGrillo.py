@@ -7,7 +7,6 @@ Created on Fri Jan  3 14:05:29 2020
 """
 
 def grillom(a:int) -> str:
-
     """
     this is my function
 
