@@ -11,5 +11,3 @@ def paisleyc(a:int) -> str:
     else:
         return "b"
 
-
-print(paisleyc(2))
