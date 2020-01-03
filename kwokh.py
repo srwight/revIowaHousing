@@ -6,7 +6,6 @@ Created on Fri Jan  3 13:19:54 2020
 """
 
 def kwokh (a:int) -> str:
-    
     """Parameters: a should be a 1 or a 2"""
     
     if (a == 1):
