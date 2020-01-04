@@ -17,7 +17,7 @@ dataframe as input and one-hot encode essential features
 """
 import pandas as pd
 
-def engineer(df:pd.DataFrame) -> pd.DataFrame:
+def feature_extract(df:pd.DataFrame) -> pd.DataFrame:
     """
     Feature engineering for:
         Utilities
@@ -51,7 +51,7 @@ def engineer(df:pd.DataFrame) -> pd.DataFrame:
 
 def main():
     df=pd.read_csv('train.csv')
-    new_df = engineer(df)
+    new_df = feature_extract(df)
     print(new_df)
 if __name__ == '__main__':
     main()
