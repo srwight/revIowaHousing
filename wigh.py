@@ -26,7 +26,7 @@ import pandas as pd
 import numpy as np
 from scipy.stats import skew
 
-def engineer(df:pd.DataFrame) -> pd.DataFrame:
+def feature_extract(df:pd.DataFrame) -> pd.DataFrame:
     """
     Feature engineering for:
         LowQualFinSF
@@ -95,7 +95,7 @@ def engineer(df:pd.DataFrame) -> pd.DataFrame:
 
 def main():
     df=pd.read_csv('train.csv')
-    print(engineer(df))
+    print(feature_extract(df))
     
 if __name__ == '__main__':
     main()
