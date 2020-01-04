@@ -15,7 +15,7 @@ features:
     1stFlrSF
     2ndFlrSF
 
-This is done in the following function engineer(), which will
+This is done in the following function feature_extract(), which will
 receive the original dataframe, and treat any missing data and 
 outliers, and adjust for skewness to help make the data fit a 
 normal distribution.
