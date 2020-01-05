@@ -8,7 +8,7 @@ Created on Sun Jan  5 12:32:12 2020
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-def feature_extract() :
+def feature_extract(data:pd.dataframe):
     #getting my feautres into a seprate data frame
     my_features = data[['BsmtQual','ExterQual','ExterCond','Foundation']]
     #creating a list of my features 
