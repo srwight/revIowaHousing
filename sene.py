@@ -75,3 +75,5 @@ def feature_extract(data: pd.DataFrame) -> pd.DataFrame:
     
     col3 = df_fillNa[features2].apply(lambda x: map2[x])
     df_fillNa[features2] = col3
+    
+    return df_fillNa
