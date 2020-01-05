@@ -49,7 +49,7 @@ def feature_extract(dataset:pd.DataFrame) -> pd.DataFrame:
     
     # Handling missing values by filling/imputing them with the median
     for c1 in myFeatures.columns.values:
-        myFeatures = myFeatures.fillna(myFeatures[c1].median())
+        myFeatures = myFeatures.fillna(myFeatures[c1].mean())
         
     # Handling outliers by replacing the values of those outliers
     # with the value used to filter the data or with some value close to it
