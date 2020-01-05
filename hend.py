@@ -51,6 +51,6 @@ def feature_extract(df):
 
 def main():
     df=pd.read_csv('train.csv')
-    print(engineer(df))
+    print(feature_extract(df))
 if __name__ == '__main__':
     main()
