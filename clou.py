@@ -8,7 +8,7 @@ import numpy as np
 from scipy.stats import skew
     
 
-def clou(dataframe):    
+def feature_extract(dataframe):    
     
     # Create my dataframe
     myFeatures = ['LotFrontage', 'LotArea', 'MasVnrArea', 'BsmtFinSF1', 'BsmtFinSF2', 'SalePrice']
