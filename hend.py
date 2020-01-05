@@ -1,21 +1,14 @@
     '''
     @author: dhend
-    This addresses the following variables: exterior1st, exterior2nd, roofmatl, lotarea, lotfrontage, masvnrarea, and masvnrtype.
-    Most of the data remains unaffected.
-
-        Parameters
-    ----------
-    df : pd.DataFrame
-        This should be the entire Housing Prices dataframe.
-    Returns
-    -------
-    pd.DataFrame
-        This dataframe will include ONLY the engineered features
-        listed above.
     '''
 
 import pandas as pd
 def feature_extract(df):
+    
+    '''
+    This addresses the following variables: exterior1st, exterior2nd, roofmatl, lotarea, lotfrontage, masvnrarea, BsmtFinSF1, BsmtFinSF2, and masvnrtype.
+    Exterior2nd, BsmtFinSf1, and BsmtFinSf2 are dropped. The continuous variables have skew applied.
+    '''
 
     #Exterior2nd was nearly identical to Exterior1st, so I dropped it.
     #df.drop(['Exterior2nd'], axis=1, inplace = True)
@@ -30,17 +23,13 @@ def feature_extract(df):
     IQR = Q3 - Q1
 
     #I replaced outliers with the mean.
-    for entry in df['LotFrontage']:
-        if entry > (Q3 + 1.5 * IQR):
-            df['LotFrontage'].replace(entry, df['LotFrontage'].mean(), inplace = True)
+    df['LotFrontage'].clip(0,((Q3 + 1.5 * IQR))
 
     Q1 = df['MasVnrArea'].quantile(.25)
     Q3 = df['MasVnrArea'].quantile(.75)
     IQR = Q3 - Q1
 
-    for entry in df['MasVnrArea']:
-    if entry > (Q3 + 1.5 * IQR):
-        df['MasVnrArea'].replace(entry, df['MasVnrArea'].mean(), inplace = True)
+    df['MasVnrArea'].clip(0,((Q3 + 1.5 * IQR))
 
     #Dummy variables are given for categorical variables.
     pd.get_dummies(df['Exterior1st'])
@@ -60,3 +49,8 @@ def feature_extract(df):
 
     return features
 
+def main():
+    df=pd.read_csv('train.csv')
+    print(engineer(df))
+if __name__ == '__main__':
+    main()
