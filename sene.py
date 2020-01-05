@@ -19,7 +19,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def senehd(data: pd.DataFrame) -> pd.DataFrame:
+def feature_extract(data: pd.DataFrame) -> pd.DataFrame:
     """
     I am doing Feature Engineering for the following features:
         GarageQual - Garage quality
