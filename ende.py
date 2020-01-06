@@ -23,7 +23,7 @@ the new categorical features into it.
 
 """
 
-def eenderFeatures(df: pd.DataFrame) -> pd.DataFrame :
+def feature_extract(df: pd.DataFrame) -> pd.DataFrame :
     
     """
     
@@ -91,7 +91,7 @@ def eenderFeatures(df: pd.DataFrame) -> pd.DataFrame :
 # This section for testing purposes only
 def main():
     data = pd.read_csv(r"C:\Users\eende\Desktop\House Price Dataset\train.csv")
-    print(eenderFeatures(data))
+    print(feature_extract(data))
     
 if __name__ == '__main__':
     main()
