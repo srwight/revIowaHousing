@@ -31,7 +31,7 @@ def feature_extract(data:pd.DataFrame):
    data.loc[data['GarageFinish']=='Unf','GarageFinish'] = 1
    data.loc[data['GarageFinish']=='RFn','GarageFinish'] = 2
    data.loc[data['GarageFinish']=='Fin','GarageFinish'] = 3
-   return features
+   return data[['Functional', 'FireplaceQu','GarageType','GarageFinish']]
 
    
 
