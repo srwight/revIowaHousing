@@ -4,7 +4,7 @@
 """
 
 
-def feature_extract(df) -> str:
+def feature_extract(data) -> dataframe:
     """
     Parameters
     ----------
@@ -12,6 +12,9 @@ def feature_extract(df) -> str:
 	['MSSubClass','MSZoning', 'Street', 'Alley']
 
     """
+	# I know about the conventions and ideally you are not supposed to import libraries inside the function, however, I
+	# do remember that I brought this up during the class and the suggestions was made to go ahead and proceed with libraries 
+	# being imported, since, it doesn't bother and conflit the code. just to be safe. 
     import pandas as pd
     import numpy as np
     import matplotlib.pyplot as plt
