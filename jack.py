@@ -5,6 +5,7 @@ Created on Mon Jan  6 10:57:22 2020
 
 @author: staxx
 """
+import pandas as pd
 
 def feature_extract(df_train):
     '''
@@ -32,5 +33,5 @@ def feature_extract(df_train):
 # based off EDA LandSLope can be changed to numerical based of th three types
     df_train.LandSlope.replace({'Sev':1, 'Mod':2, 'Gtl':3}, inplace=True)
     
-    return pd.concat(df_housing, df_train.LandSlope)
+    return pd.concat([df_housing, df_train.LandSlope], axis=1)
 
