@@ -8,7 +8,7 @@ Created on Fri Jan  3 14:05:31 2020
 import pandas as pd
 
 
-def feature_engineer(df:pd.DataFrame) -> pd.DataFrame:
+def feature_extract(df:pd.DataFrame) -> pd.DataFrame:
     
     '''
     Feature engineering for:
