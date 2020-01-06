@@ -47,7 +47,7 @@ def feature_extract(dataset:pd.DataFrame) -> pd.DataFrame:
     """
     
     # Picking out the assigned columns & putting them into a separate DataFrame
-    myFeatures = pd.DataFrame(dataset, columns = ['GarageArea', 'GarageCars', 'OpenPorchSF', 'WoodDeckSF'])
+    myFeatures = dataset[['GarageArea', 'GarageCars', 'OpenPorchSF', 'WoodDeckSF']]
     
     # Handling missing values by filling/imputing them with the mean
     for c1 in myFeatures.columns.values:
