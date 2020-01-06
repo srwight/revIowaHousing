@@ -35,5 +35,4 @@ def feature_extract(traindata):
                            prefix_sep= '_',
                            dummy_na=False,)
     return df_temp
-feature_extract(traindata)
 
