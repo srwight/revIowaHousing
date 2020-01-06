@@ -21,7 +21,7 @@ def feature_extract(data) -> dataframe:
     
 
 
-    data = pd.read_csv("train.csv")
+    #data = pd.read_csv("train.csv")
     my_features = ['MSSubClass', 'MSZoning', 'Street', 'Alley']
     data = data[my_features]
 
