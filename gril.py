@@ -13,8 +13,8 @@ import matplotlib.pyplot as plt
 import sklearn as skl
 
 
-traindata = pd.read_csv("/home/michael/Downloads/Dataset(1)/train.csv")
-testdata = pd.read_csv("/home/michael/Downloads/Dataset(1)/test.csv")
+#traindata = pd.read_csv("/home/michael/Downloads/Dataset(1)/train.csv")
+#testdata = pd.read_csv("/home/michael/Downloads/Dataset(1)/test.csv")
 
 
 def feature_extract(traindata):
