@@ -4,7 +4,7 @@
 """
 
 
-def avetisyang(df) -> str:
+def feature_extract(df) -> str:
     """
     Parameters
     ----------
