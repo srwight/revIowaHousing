@@ -7,7 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-def feature_extract(data) -> dataframe:
+def feature_extract(data) -> pd.DataFrame:
     """
     Parameters
     ----------
@@ -41,9 +41,9 @@ def feature_extract(data) -> dataframe:
     data_num[data_num_skew.index] = np.log1p(data_num[data_num_skew.index])
 
     # Printing total numbers and percentage of missing data
-    total = data.isnull().sum().sort_values(ascending=False)
-    percent = (data.isnull().sum() / data.isnull().count()).sort_values(ascending=False)
-    missing_data = pd.concat([total, percent], axis=1, keys=['Total', 'Percent'])
+    # total = data.isnull().sum().sort_values(ascending=False)
+    # percent = (data.isnull().sum() / data.isnull().count()).sort_values(ascending=False)
+    # missing_data = pd.concat([total, percent], axis=1, keys=['Total', 'Percent'])
 
     # The column 'Alley' has more than 90% missing values so we delet the whole column!!!
     # We may leave the data as it is or do data imputation
