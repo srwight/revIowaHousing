@@ -36,7 +36,7 @@ def feature_extract(traindata):
                            prefix_sep= '_',
                            dummy_na=False)
 
-    mydata.drop('MoSold', axis=1)
+    mydata.drop('MoSold', axis=1, inplace=True)
 
     # s: now we need to concatenate our dummies to our data
 
