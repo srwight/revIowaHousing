@@ -7,7 +7,7 @@ def feature_extract(data:pd.DataFrame):
    data['GarageType'].fillna(0, inplace=True)
    data['GarageFinish'].fillna(0, inplace=True)
    """Categorical Features converted to ordinals."""
-   features = data[['Functional', 'FireplaceQu','GarageType','GarageFinish']]
+   # features = data[['Functional', 'FireplaceQu','GarageType','GarageFinish']]
    data.loc[data['Functional']=='Typ','Functional'] = 0
    data.loc[data['Functional']=='Min1','Functional'] = 1
    data.loc[data['Functional']=='Min2','Functional'] = 2
