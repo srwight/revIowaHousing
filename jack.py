@@ -24,14 +24,20 @@ def feature_extract(df_train):
     
     
     '''
-# create list of my respective values for evaluating 
+    # create list of my respective values for evaluating 
     predictor_columns = ['Neighborhood','Condition1','Condition2']
 
-# create dummy list of relevant values for evaluation
+    # create dummy list of relevant values for evaluation
     df_housing = pd.get_dummies(df_train[predictor_columns])
 
-# based off EDA LandSLope can be changed to numerical based of th three types
+    # based off EDA LandSLope can be changed to numerical based of th three types
     df_train.LandSlope.replace({'Sev':1, 'Mod':2, 'Gtl':3}, inplace=True)
-    
     return pd.concat([df_housing, df_train.LandSlope], axis=1)
 
+def main():
+   df = pd.read_csv('train.csv')
+   newdf = feature_extract(df)
+   print(newdf.dtypes)
+
+if __name__ == '__main__':
+   main()

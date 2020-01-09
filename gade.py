@@ -29,7 +29,8 @@ def feature_extract(data:pd.DataFrame):
         #assign the new list to my old list 
         my_features[column]=newcol
     #getting my dummy features     
-    my_dummy_features = pd.get_dummies(my_features)
+    my_dummy_features = pd.get_dummies(my_features.Foundation)
+    my_features.drop('Foundation', axis=1, inplace=True)
     #concate all my features (the dummy and my_features) to one data frame 
     my_features = pd.concat([my_features,my_dummy_features],axis = 1)
     #return the data frame 
