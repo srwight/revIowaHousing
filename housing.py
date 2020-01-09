@@ -26,11 +26,23 @@ def main():
         df_ext = pd.concat([df_ext, module.feature_extract(df_init)], axis=1)
     
     y = df_init.SalePrice
-    result = algoB.algoB(df_ext, y)
 
-    #see what we did
-    print(result)
+    sum = 0
+    total = 0
+    min = 1
+    max = 0
+    for i in range(10):
+        result = algoB.algoB(df_ext, y)
+        print(result)
+        sum += result
+        total = i+1
+        if result < min:
+            min = result
+        if result > max:
+            max = result
     
-    
+    print('\n\n\nMean:\t',sum/total)
+    print('Min:\t',min)
+    print('Max:\t',max)
 if __name__ == '__main__':
     main()

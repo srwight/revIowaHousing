@@ -12,7 +12,14 @@ def algoB (x, y) -> str: #x is fatures, y is the predicted variable
                                                    random_state = None,
                                                    shuffle = True,
                                                    stratify = None) 
-    model = Ridge()
+    model = Ridge(alpha=1.0,
+                  fit_intercept=True,
+                  normalize=False,
+                  copy_X=True,
+                  max_iter=None,
+                  tol=1e-3,
+                  solver="auto",
+                  random_state=None)
     model.fit(xtrain, ytrain)
     score = model.score(xtest, ytest)
     #xtrain, xtest, ytrain, ytest
