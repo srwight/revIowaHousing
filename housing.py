@@ -27,22 +27,16 @@ def main():
     
     y = df_init.SalePrice
 
-    sum = 0
-    total = 0
-    min = 1
-    max = 0
-    for i in range(10):
+    results = []
+    for i in range(100):
         result = algoB.algoB(df_ext, y)
+        # if i % 1000 == 0:
+        #     print(i, 'iterations\n')
         print(result)
-        sum += result
-        total = i+1
-        if result < min:
-            min = result
-        if result > max:
-            max = result
+        results.append(result)
     
-    print('\n\n\nMean:\t',sum/total)
-    print('Min:\t',min)
-    print('Max:\t',max)
+    print('\n\n\nMean:\t',sum(results)/len(results))
+    print('Min:\t',min(results))
+    print('Max:\t',max(results))
 if __name__ == '__main__':
     main()

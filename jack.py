@@ -34,6 +34,7 @@ def feature_extract(df_train):
     df_train.LandSlope.replace({'Sev':1, 'Mod':2, 'Gtl':3}, inplace=True)
     return pd.concat([df_housing, df_train.LandSlope], axis=1)
 
+    
 def main():
    df = pd.read_csv('train.csv')
    newdf = feature_extract(df)
