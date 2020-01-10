@@ -46,14 +46,17 @@ def performPCA(df:pd.DataFrame, var = 0.95, printComponents = False) -> pd.DataF
     
     # Perfoming PCA on the dataset using the 'var' parameter
     pca = PCA(n_components = var)
-    df = pca.fit_transform(df)
+    principalComponents = pca.fit_transform(df)
+    
+    # Converting principalComponents (numpy array) to a pd.dataframe
+    principalDf = pd.DataFrame(data = principalComponents)
     
     # Print number of components remaining after PCA if requested
     if printComponents:
         print("PCA with variance of %.f%%"%(var*100))
         print("Number of components: %d"%len(pca.components_))
     
-    return df
+    return principalDf
   
 if __name__ == '__main__':
     df=pd.read_csv('fixed_No.csv')
