@@ -28,6 +28,7 @@ def main():
     df_num_skew = df_num_skew.loc[df_num_skew > 0.75]
     skewcols = list(df_num_skew.index)
 
+    # We have to save the information that describes when we applied skew.
     dump(skewcols,'skewcols.joblib')
     df_num[skewcols] = np.log1p(df_num[skewcols])
 
@@ -39,9 +40,18 @@ def main():
         sparse = False,
         handle_unknown='ignore'
     )
-    df = pd.concat([df_num, pd.DataFrame(enc.fit_transform(df_obj))], axis=1)
+    df = pd.concat(
+        [
+            df_num, 
+            pd.DataFrame(
+                enc.fit_transform(df_obj)
+                )
+        ], 
+        axis=1
+    )
     dump(enc, 'onehot.joblib')
 
+    # apply normalization
     normer = MinMaxScaler()
     df = normer.fit_transform(df)
     dump(normer, 'scaler.joblib')
@@ -53,16 +63,20 @@ def main():
 
     #train-test Split
 
+    rndState = np.random.RandomState()
+
     X_train, X_test, y_train, y_test = train_test_split(
         df,
         y,
-        train_size = 0.8
+        train_size = 0.9,
+        random_state = rndState
     )
 
     X_trainp, X_testp, y_trainp, y_testp = train_test_split(
         dfpca,
         y,
-        train_size=0.8
+        train_size=0.9,
+        random_state = rndState
     )
 
     #train Ridge
