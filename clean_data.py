@@ -34,7 +34,7 @@ def BsmntFins(df_in:pd.DataFrame) -> pd.DataFrame:
     Parameters:
     type1 and type2: Semi-ordinal series including:
         Ordinal Values Representing Living Space:
-            GQL -   3
+            GLQ -   3
             ALQ -   2
             BLQ -   1
             else -  0
@@ -343,6 +343,8 @@ def clean(df:pd.DataFrame) -> pd.DataFrame:
     
     df_obj = df_out.loc[:,(df_out.dtypes == 'object')]
     df_num = df_out.loc[:,~(df_out.dtypes == 'object')]
+
+    df_num = df_num.apply(lambda x: x.apply(np.log1p))
 
     return (df_num, df_obj)
 
