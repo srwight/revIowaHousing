@@ -17,30 +17,50 @@ from scipy.stats import skew
 
 def main():
     #read our training data
+    #region
     df = pd.read_csv('train.csv')
     y = df.SalePrice
-    
+    #endregion
+
     #apply feature engineering
     df_num, df_obj = clean(df)
 
     #Get Skew info, use it to create a list of column headers so we can log the same columns in our unknown data
+    #region
     df_num_skew = df_num.apply(skew)
     df_num_skew = df_num_skew.loc[df_num_skew > 0.75]
     skewcols = list(df_num_skew.index)
+    df_num[skewcols] = np.log1p(df_num[skewcols])
+    #endregion
 
     # We have to save the information that describes when we applied skew.
+    #region
     dump(skewcols,'skewcols.joblib')
-    df_num[skewcols] = np.log1p(df_num[skewcols])
+    #endregion
 
     #save the means of our numerical values for use in our deployment model
+    #region
     colmeans = df_num.mean(axis=1)
     dump(colmeans, 'num_means.joblib')
+    #endregion
 
     #impute the means of any column that had missing data
+    #region
+    # note - this is a bit convoluted. The good folks down at
+    # pandas haven't quite gotten around to filling columns from
+    # a series. But they can fill rows with the best of 'em. 
+    # 
+    # So here's what we do: 
+    # 1) Rotate the dataframe - but just for a second (set copy fo False)
+    # 2) Fill the rows (ahem, columns), and set inplace to True
+    #
+    # This has the effect of twisting it, filling it, and letting go so it 
+    # snaps back!
     df_num.swapaxes('index','columns',copy=False).fillna(colmeans, axis=0, inplace=True)
-
+    #endregion
 
     #apply OneHotEncoding
+    #region
     enc = OneHotEncoder(
         sparse = False,
         handle_unknown='ignore'
@@ -55,18 +75,26 @@ def main():
         axis=1
     )
     dump(enc, 'onehot.joblib')
+    #endregion
 
     # apply normalization
+    #region
     normer = MinMaxScaler()
     df = normer.fit_transform(df)
     dump(normer, 'scaler.joblib')
+    #endregion
 
     # apply PCA
+    #region
     pcamodel = PCA(n_components = 0.95)
     dfpca = pcamodel.fit_transform(df)
     dump(pcamodel, 'pca.joblib')
+    # print(dfpca)
+    # print(df)
+    #endregion
 
     ## Train/Test Split
+    #region
 
     # grab a numpy RandomState that we can use with both splits, so that both 
     # PCA and non-PCA use the same train/test split for comparison purposes
@@ -87,8 +115,10 @@ def main():
         train_size=0.9,
         random_state = rndState
     )
+    #endregion
 
     ## Train the Models
+    #region
     #declare Ridge - non-PCA
     ridge_model = Ridge(
         alpha=1.0,
@@ -135,11 +165,11 @@ def main():
         n_jobs=-1
     )
 
-    #train Ridge - non-PCA
+    #train OLS - non-PCA
     OLS_model.fit(X_train,y_train)
     dump(OLS_model,'models_OLS.joblib')
 
-    #train Ridge - PCA
+    #train OLS - PCA
     OLS_modelp.fit(X_trainp, y_trainp)
     dump(OLS_modelp,'modelspca_OLS.joblib')
 
@@ -194,8 +224,10 @@ def main():
     #train SGD - PCA
     SGD_modelp.fit(X_trainp, y_trainp)
     dump(SGD_modelp,'modelspca_SGD.joblib')
+    #endregion
 
     ##TESTING PHASE
+    #region
     #Get the non-PCA scores
     scores = {
         'Ridge':ridge_model.score(X_test,y_test),
@@ -215,6 +247,7 @@ def main():
     scorespca = pd.Series(scorespca).rename('PCA')
 
     print(pd.concat([scores, scorespca],axis=1))
+    #endregion
 
 if __name__ == '__main__':
     main()
