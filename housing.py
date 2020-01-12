@@ -20,10 +20,10 @@ def main():
     y = df_init.SalePrice
     
     #apply feature engineering
-    df_ext = clean(df_init)
-    
-    df_obj = df_ext.loc[:,(df_ext.dtypes=='object')]
-    df_num = df_ext.loc[:,~(df_ext.dtypes=='object')]
+    df_num, df_obj = clean(df_init)
+
+    #save the means of our numerical values for use in our deployment model
+    dump(df_num.mean(), 'num_means.joblib')
 
     #apply OneHotEncoding
     enc = OneHotEncoder(

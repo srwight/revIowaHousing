@@ -169,11 +169,10 @@ def clean(df:pd.DataFrame) -> pd.DataFrame:
     df - Original dataframe
 
     Returns:
-    DataFrame with ordinal features treated and integerized.
-
-    THE DATA WILL STILL NEED TO BE OneHotEncoder-ed. But that is better
-    done in the main file, so that storing the resultant model will be
-    more straightforward.
+    Tuple of Dataframes:
+    (df_num, df_obj)
+    df_num: DataFrame with ordinal features treated and integerized.
+    df_obj: Categorical data ready to be treated with OneHotEncoder
     '''
     
     generic_ordinal_features = ['BsmtCond',
@@ -341,11 +340,11 @@ def clean(df:pd.DataFrame) -> pd.DataFrame:
         ],
         axis = 1
     )
-    df.drop(objects, 1, inplace=True)
-
-    df.drop(['Id','SalePrice'],1,inplace=True)
     
-    return(df_out)
+    df_obj = df_out.loc[:,(df_out.dtypes == 'object')]
+    df_num = df_out.loc[:,~(df_out.dtypes == 'object')]
+
+    return (df_num, df_obj)
 
 
 
