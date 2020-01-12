@@ -33,7 +33,12 @@ def main():
     df_num[skewcols] = np.log1p(df_num[skewcols])
 
     #save the means of our numerical values for use in our deployment model
-    dump(df_num.mean(), 'num_means.joblib')
+    colmeans = df_num.mean(axis=1)
+    dump(colmeans, 'num_means.joblib')
+
+    #impute the means of any column that had missing data
+    df_num.swapaxes('inxex','columns',copy=False).fillna(colmeans, axis=0, inplace=True)
+
 
     #apply OneHotEncoding
     enc = OneHotEncoder(
@@ -57,14 +62,17 @@ def main():
     dump(normer, 'scaler.joblib')
 
     # apply PCA
-    pcamodel = PCA(n_components = 0.999)
+    pcamodel = PCA(n_components = 0.95)
     dfpca = pcamodel.fit_transform(df)
     dump(pcamodel, 'pca.joblib')
 
-    #train-test Split
+    ## Train/Test Split
 
+    # grab a numpy RandomState that we can use with both splits, so that both 
+    # PCA and non-PCA use the same train/test split for comparison purposes
     rndState = np.random.RandomState()
 
+    # split the non-PCA data
     X_train, X_test, y_train, y_test = train_test_split(
         df,
         y,
@@ -72,6 +80,7 @@ def main():
         random_state = rndState
     )
 
+    # Split the PCA data
     X_trainp, X_testp, y_trainp, y_testp = train_test_split(
         dfpca,
         y,
@@ -79,7 +88,8 @@ def main():
         random_state = rndState
     )
 
-    #train Ridge
+    ## Train the Models
+    #declare Ridge - non-PCA
     ridge_model = Ridge(
         alpha=1.0,
         fit_intercept=True,
@@ -90,6 +100,7 @@ def main():
         solver='auto',
         random_state=None
     )
+    #declare Ridge - PCA
     ridge_modelp = Ridge(
         alpha=1.0,
         fit_intercept=True,
@@ -101,20 +112,22 @@ def main():
         random_state=None
     )
 
+    #fit ridge - Non-PCA
     ridge_model.fit(X_train,y_train)
     dump(ridge_model,'models_ridge.joblib')
 
+    #fit ridge - PCA
     ridge_modelp.fit(X_trainp, y_trainp)
     dump(ridge_modelp,'modelspca_ridge.joblib')
 
-    #train OLS
+    #declare OLS - non-PCA
     OLS_model = LinearRegression(
         fit_intercept=True,
         normalize=False,
         copy_X=True,
         n_jobs=-1
     )
-
+    #declare OLS - PCA
     OLS_modelp = LinearRegression(
         fit_intercept=True,
         normalize=False,
@@ -122,13 +135,15 @@ def main():
         n_jobs=-1
     )
 
+    #train Ridge - non-PCA
     OLS_model.fit(X_train,y_train)
     dump(OLS_model,'models_OLS.joblib')
 
+    #train Ridge - PCA
     OLS_modelp.fit(X_trainp, y_trainp)
     dump(OLS_modelp,'modelspca_OLS.joblib')
 
-    #train SGD
+    #declare SGD - nonPCA
     SGD_model = SGDRegressor(
         loss='squared_loss',
         penalty='l2',
@@ -150,6 +165,7 @@ def main():
         average=False
     )
 
+    #declare SGD - PCA
     SGD_modelp = SGDRegressor(
         loss='squared_loss',
         penalty='l2',
@@ -171,24 +187,30 @@ def main():
         average=False
     )
 
+    #train SGD - non-PCA
     SGD_model.fit(X_train,y_train)
     dump(SGD_model,'models_SGD.joblib')
 
+    #train SGD - PCA
     SGD_modelp.fit(X_trainp, y_trainp)
     dump(SGD_modelp,'modelspca_SGD.joblib')
 
+    ##TESTING PHASE
+    #Get the non-PCA scores
     scores = {
         'Ridge':ridge_model.score(X_test,y_test),
         'SGD':SGD_model.score(X_test,y_test),
         'OLS':OLS_model.score(X_test,y_test)
     }
 
+    #Get the PCA scores
     scorespca = {
         'Ridge':ridge_modelp.score(X_testp,y_testp),
         'SGD':SGD_modelp.score(X_testp,y_testp),
         'OLS':OLS_modelp.score(X_testp,y_testp)
     }
 
+    #Store them in pd.DataFrame structures for pretty printing
     scores = pd.Series(scores).rename('NO PCA')
     scorespca = pd.Series(scorespca).rename('PCA')
 
