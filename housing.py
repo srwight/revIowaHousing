@@ -37,7 +37,7 @@ def main():
     dump(colmeans, 'num_means.joblib')
 
     #impute the means of any column that had missing data
-    df_num.swapaxes('inxex','columns',copy=False).fillna(colmeans, axis=0, inplace=True)
+    df_num.swapaxes('index','columns',copy=False).fillna(colmeans, axis=0, inplace=True)
 
 
     #apply OneHotEncoding

@@ -1,7 +1,5 @@
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import OneHotEncoder
-import pickle
 
 def basic_ordinal(
     sr_in: pd.Series, 
@@ -229,16 +227,27 @@ def conditions(df_in:pd.DataFrame) -> pd.DataFrame:
 
 def clean(df:pd.DataFrame) -> pd.DataFrame:
     '''
+    This function specifically treats the *ordinal* features of the dataset.
+    Its only other function is to split the dataset into sets of nominal and
+    numerical data.
+
+    It is assumed that treatment of numerical data will occur in the main thread.
+    This is so that saving and retrieving data can occur in the module calling
+    this one, rather than in this module.
+
     Arguments:
     df - Original dataframe
 
     Returns:
     Tuple of Dataframes:
     (df_num, df_obj)
-    df_num: DataFrame with ordinal features treated and integerized.
+    df_num: DataFrame with:
+        All numerical variables unchanged
+        All ordinal features treated and integerized.
     df_obj: Categorical data ready to be treated with OneHotEncoder
     '''
-    
+    ## BASIC ORDINALITY
+    #region
     #These features all use the same Ordinality keywords
     generic_ordinal_features = [
         'BsmtCond',
@@ -253,22 +262,6 @@ def clean(df:pd.DataFrame) -> pd.DataFrame:
         'PoolQC']
     df_out = df[generic_ordinal_features].apply(basic_ordinal)
     df.drop(generic_ordinal_features, 1,inplace=True)
-
-    #These features need to be passed into the 2-hot routine
-    Basement_Finish_Type_Features = ['BsmtFinType1','BsmtFinType2']
-    df_out = pd.concat(
-        [
-            df_out, 
-            BsmntFins(df[Basement_Finish_Type_Features])
-        ],
-        axis=1
-    )
-    df.drop(Basement_Finish_Type_Features,1,inplace=True)
-
-    #This feature needs to be split into two gradient columns.
-    Fence_Features = 'Fence'
-    df_out = pd.concat([df_out, fence(df[Fence_Features])],axis=1)
-    df.drop(Fence_Features,1,inplace=True)
 
     # The next several features simply needs a basic ordinality applied using
     # the values indicated.
@@ -393,6 +386,19 @@ def clean(df:pd.DataFrame) -> pd.DataFrame:
         axis=1
     )
     df.drop('PavedDrive',1,inplace=True)
+    #endregion
+    ##Two-Hot Encoding
+    #region
+    #These features need to be passed into their specific 2-hot routine
+    Basement_Finish_Type_Features = ['BsmtFinType1','BsmtFinType2']
+    df_out = pd.concat(
+        [
+            df_out, 
+            BsmntFins(df[Basement_Finish_Type_Features])
+        ],
+        axis=1
+    )
+    df.drop(Basement_Finish_Type_Features,1,inplace=True)
 
     # These also need to be 2-hot encoded. In the future, perhaps a single
     # 2-hot encoding methot could be generated.
@@ -404,6 +410,19 @@ def clean(df:pd.DataFrame) -> pd.DataFrame:
         axis=1
     )
     df.drop(['Condition1','Condition2'], 1, inplace=True)
+
+    #endregion
+    
+    # 'Fence' needs to be split into two gradient columns.
+    Fence_Features = 'Fence'
+    df_out = pd.concat(
+        [
+            df_out, 
+            fence(df[Fence_Features])
+        ],
+        axis=1
+    )
+    df.drop(Fence_Features,1,inplace=True)
 
     # MoSold needs to be handled as categorical.
     df_out['MoSold'] = df.MoSold.apply(str)
