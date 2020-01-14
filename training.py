@@ -19,10 +19,10 @@ from ordinals import ordinals
 from sklearn.preprocessing import OneHotEncoder
 from joblib import load, dump
 
-df_in = pd.read_csv('train.csv', index_col = 'Id'))
+df_in = pd.read_csv('train.csv', index_col = 'Id')
 SalePrice = df_in.SalePrice
 
-df.drop(['Heating', 'KitchAbvGrd', '3SeasonPrch','Ext2nd','TotBsmtSF'])
+df_in.drop(['Heating', 'KitchAbvGrd', '3SeasonPrch','Ext2nd','TotBsmtSF'])
 
 df_num, df_obj = ordinals(df_in)
 
@@ -64,13 +64,13 @@ def fillNA(df:pd.DataFrame) -> pd.DataFrame:
 '''Models defined here
 '''
 #See L.Regres Documentation: https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html#sklearn.linear_model.LinearRegression
-lm = linear_model.LinearRegression(fit_intercept=True, 
+lm = LinearRegression(fit_intercept=True, 
                                    normalize=False, 
                                    copy_X=True, 
                                    n_jobs=None)
 
 #See Ridge Documentation: https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Ridge.html#sklearn.linear_model.Ridge 
-lr = linear_model.Ridge(alpha=1.0,
+lr = Ridge(alpha=1.0,
                         fit_intercept=True,
                         normalize=False,
                         copy_X=True,
@@ -80,7 +80,7 @@ lr = linear_model.Ridge(alpha=1.0,
                         random_state=None)
 
 #See SGD Documentation: https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.SGDRegressor.html#sklearn.linear_model.SGDRegressor
-sgd = linear_model.SGDRegressor(
+sgd = SGDRegressor(
     loss='squared_loss',
     penalty='l2',
     alpha=0.0001, 

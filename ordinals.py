@@ -81,6 +81,6 @@ def ordinals(df) -> pd.DataFrame:
 
 if __name__ == '__main__':
 	df = pd.read_csv('train.csv')
-	print(ordinals(df).head())
+	# print(ordinals(df).head())
 
 
