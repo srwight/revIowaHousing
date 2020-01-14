@@ -26,6 +26,7 @@ from sklearn.model_selection import train_test_split
 
 df_in = pd.read_csv('train.csv')
 SalePrice = df_in.SalePrice
+df_in.drop('SalePrice',axis=1,inplace=True)
 
 df_in.drop(['Id','Utilities','Heating', 'KitchenAbvGr', '3SsnPorch','Exterior2nd','TotalBsmtSF'], axis=1, inplace=True)
 
@@ -44,14 +45,14 @@ df_obj.drop(['Fence','BsmtFinType1','BsmtFinType2', 'Condition1','Condition2'], 
 
 df_obj.fillna('None', inplace=True)
 
-enc1h = OneHotEncoder(sparse=False)
+enc1h = OneHotEncoder(sparse=False, handle_unknown='ignore')
 df_obj = pd.DataFrame(enc1h.fit_transform(df_obj))
 dump(enc1h, 'OneHotEnc.joblib')
 
-col_medians = df_num.median(axis=1)
+col_medians = df_num.median(axis=0)
 dump(col_medians,'ColumnMedians.joblib')
 
-df_num.swapaxes('index', 'columns',copy=False).fillna(col_medians, inplace=True)
+df_num.fillna(col_medians, inplace=True)
 
 df_num_skew = df_num.skew(axis=0)
 df_num_skew = df_num_skew.loc[df_num_skew > 0.75].index
@@ -59,19 +60,18 @@ dump(df_num_skew,'SkewCols.joblib')
 df_num[df_num_skew] = df_num[df_num_skew].apply(np.log1p)
 
 df_final = pd.concat([df_obj, df_num],axis=1)
-print(df_final.isnull().sum().loc[df_final.isnull().sum() > 0])
 
 ### Normalization ###
 
 scaler = MinMaxScaler()
-df_final = scaler.fit_transform(df_final)
+np_final = scaler.fit_transform(df_final)
 dump(scaler,'normalizer.joblib')
 
 ### PCA TIME ###
-'''
-pcaobj = PCA(n_components=0.95)
-np_final = pcaobj.fit_transform(df_final)
-dump(pcaobj, 'pcaObject.joblib')
+
+# pcaobj = PCA(n_components=0.95)
+# np_final = pcaobj.fit_transform(np_final)
+# dump(pcaobj, 'pcaObject.joblib')
 
 ### TRAIN/TEST SPLIT ###
 
@@ -81,7 +81,7 @@ X_train, X_test, y_train, y_test = train_test_split(
     test_size = 0.2,
 )
 
-'''#Models defined here
+'''Models defined here
 '''
 #See L.Regres Documentation: https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html#sklearn.linear_model.LinearRegression
 lm = LinearRegression(
@@ -94,14 +94,18 @@ lm.fit(X_train, y_train)
 dump(lm, 'OLS.joblib')
 
 #See Ridge Documentation: https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Ridge.html#sklearn.linear_model.Ridge 
-lr = Ridge(alpha=1.0,
-                        fit_intercept=True,
-                        normalize=False,
-                        copy_X=True,
-                        max_iter=None, 
-                        tol=0.001,
-                        solver='auto', 
-                        random_state=None)
+lr = Ridge(
+    alpha=1.0,
+    fit_intercept=True,
+    normalize=False,
+    copy_X=True,
+    max_iter=None, 
+    tol=0.001,
+    solver='auto', 
+    random_state=None)
+
+lr.fit(X_train, y_train)
+dump(lr, 'Ridge.joblib')
 
 #See SGD Documentation: https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.SGDRegressor.html#sklearn.linear_model.SGDRegressor
 sgd = SGDRegressor(
@@ -125,6 +129,9 @@ sgd = SGDRegressor(
     warm_start=False, 
     average=False)
 
+sgd.fit(X_train, y_train)
+dump(sgd, 'SGD.joblib')
 
-
-'''
+print('OLS\t\t', lm.score(X_test,y_test))
+print('Ridge\t\t',lr.score(X_test,y_test))
+print('SGD\t\t', sgd.score(X_test,y_test))
