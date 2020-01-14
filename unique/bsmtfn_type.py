@@ -122,7 +122,7 @@ def basement_type(df_in:pd.DataFrame) -> pd.DataFrame:
 # it is imported, it will not run.
 
 def main():
-    df_in=pd.read_csv('C:/Users/gmnya/Documents/Python/Batch Project  -Linear Regression using python - House Price Prediction/train.csv')
+    df_in=pd.read_csv('train.csv')
     print(basement_type(df_in))
 if __name__ == '__main__':
     main()
