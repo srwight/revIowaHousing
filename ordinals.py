@@ -1,6 +1,6 @@
 ### THIS IS WHERE WE CLEAN UP ORDINAL AND UNIQUE FEATURES
 import pandas as pd
-import 
+from ordinalRepl import ordinalRepl
 
 def ordinals(df) -> pd.DataFrame:
 
@@ -29,9 +29,10 @@ def ordinals(df) -> pd.DataFrame:
     FireplaceQudict = {
         "Po": 1,
         "Fa": 2,
-        "Ta": 3,
+        "TA": 3,
         "Gd": 4,
-        "EX": 5
+        "Ex": 5,
+        "NA": 0
     }
     FireplaceQu_fill = 0
 
@@ -67,18 +68,8 @@ def ordinals(df) -> pd.DataFrame:
 
     df_generic = pd.concat([ordinalRepl(df[x], generic_dict, generic_filler) for x in generic_list], axis = 1)
     df_out = pd.concat([df_out, df_generic], axis = 1)
-        
-    ### Bulk Ordinal Replacement Call
-    # This is where the call for all of the ones that have the same 
-    # dictionary will go - (including BsmtExposure?)
-
-    ### Unique Variable Function Calls
-    # Put your function in your own file, but call it here.
-    def fence_uniq(df_in):
-        df_out = pd.DataFrame()
-        df_out['Fence_Wood'] = df_in.replace(["MnWw", "GdWo", "NA", "MnPrv", "GdPrv"], [1, 2, 0, 0, 0]).fillna(0)
-        df_out['Fence_Private'] = df_in.replace(["MnWw", "GdWo", "NA", "MnPrv", "GdPrv"], [0, 0, 0, 1, 2]).fillna(0)
-        return df_out
+    
+    return df_out
 	
 
 if __name__ == '__main__':

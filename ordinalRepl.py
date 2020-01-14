@@ -10,5 +10,5 @@ Created on Mon Jan 13 16:11:09 2020
 
 def ordinalRepl(pds, ordinalDict, fill):
     ordinalSeries = pds.replace(ordinalDict)
-    ordinalSeries = ordinalDict.fillna(fill)
+    ordinalSeries = ordinalSeries.fillna(fill)
     return ordinalSeries
