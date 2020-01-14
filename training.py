@@ -22,7 +22,7 @@ from joblib import load, dump
 df_in = pd.read_csv('train.csv', index_col = 'Id')
 SalePrice = df_in.SalePrice
 
-df_in.drop(['Heating', 'KitchAbvGrd', '3SeasonPrch','Ext2nd','TotBsmtSF'])
+df_in.drop(['Heating', 'KitchAbvGr', '3SsnPrch','Exterior2nd','TotalBsmtSF'], axis=1, inplace=True)
 
 df_num, df_obj = ordinals(df_in)
 
@@ -31,6 +31,9 @@ df_obj.fillna('None')
 enc1h = OneHotEncoder()
 df_obj = enc1h.fit_transform(df_obj)
 dump(enc1h, 'OneHotEnc.joblib')
+
+print(df_obj.head())
+print(df_num.head())
 
 def skewAdjust(df:pd.DataFrame) -> pd.DataFrame:
     '''
