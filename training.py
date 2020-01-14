@@ -19,21 +19,22 @@ from ordinals import ordinals
 from sklearn.preprocessing import OneHotEncoder
 from joblib import load, dump
 
-df_in = pd.read_csv('train.csv', index_col = 'Id')
+df_in = pd.read_csv('train.csv')
 SalePrice = df_in.SalePrice
 
-df_in.drop(['Heating', 'KitchAbvGr', '3SsnPrch','Exterior2nd','TotalBsmtSF'], axis=1, inplace=True)
+df_in.drop(['Id','Utilities','Heating', 'KitchenAbvGr', '3SsnPorch','Exterior2nd','TotalBsmtSF'], axis=1, inplace=True)
 
 df_num, df_obj = ordinals(df_in)
 
-df_obj.fillna('None')
+df_obj.fillna('None', inplace=True)
 
-enc1h = OneHotEncoder()
-df_obj = enc1h.fit_transform(df_obj)
+enc1h = OneHotEncoder(sparse=False)
+df_obj = pd.DataFrame(enc1h.fit_transform(df_obj))
 dump(enc1h, 'OneHotEnc.joblib')
 
-print(df_obj.head())
-print(df_num.head())
+col_medians = df_num.median(axis=1)
+dump(col_medians,'ColumnMedians.joblib')
+
 
 def skewAdjust(df:pd.DataFrame) -> pd.DataFrame:
     '''
