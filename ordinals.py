@@ -7,7 +7,7 @@ def ordinals(df) -> pd.DataFrame:
     ### Dictionaries and fill values
     ## Put your feature’s information here in the below-outlined format.
     ## Leave a space after each feature.
-        
+
     ## BsmtExposure
     BsmtExposure_dict = {'Gd': 4, 'Av': 3, 'Mn': 2, 'No':1, 'NA':0}
     BsmtExposure_fillval = 0
@@ -50,7 +50,7 @@ def ordinals(df) -> pd.DataFrame:
 
     # The Rest
     generic_dict = {'Ex':5,'Gd':4,'TA':3,'Fa':2,'Po':1,'Na':0}
-    generic_list = ['BsmtCond','BsmtQual','FireplaceQu','GarageQual','GarageCond','PoolQC','ExterQual','KitchenQual','HeatingQC','ExterCond']
+    generic_list = ['BsmtCond','BsmtQual','GarageQual','GarageCond','PoolQC','ExterQual','KitchenQual','HeatingQC','ExterCond']
     generic_filler = 0
 
     ### Standard Ordinal Replacement Calls
@@ -65,11 +65,18 @@ def ordinals(df) -> pd.DataFrame:
         ],
         axis = 1  
     )
+    df.drop(['BsmtExposure', 'Functional', 'FireplaceQu', 'GarageFinish', 'LandSlope'], axis=1, inplace=True)
 
     df_generic = pd.concat([ordinalRepl(df[x], generic_dict, generic_filler) for x in generic_list], axis = 1)
     df_out = pd.concat([df_out, df_generic], axis = 1)
+    df.drop(generic_list, axis=1, inplace=True)
+
+    df = pd.concat([df, df_out], axis=1)
+
+    df_obj = df.loc[:,df.dtypes == 'object']
+    df_num = df.loc[:,~(df.dtypes == 'object')]
     
-    return df_out
+    return df_num, df_obj
 	
 
 if __name__ == '__main__':
