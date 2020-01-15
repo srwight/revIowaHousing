@@ -46,16 +46,16 @@ scaler = load('normalizer.joblib')
 np_final = scaler.transform(df_final)
 
 ### PCA ###
-# pcaobj = load('pcaObject.joblib')
-# np_final = pcaobj.transform(np_final)
+pcaobj = load('pcaObject.joblib')
+np_final = pcaobj.transform(np_final)
 
 ols = load('OLS.joblib')
 ridge = load('Ridge.joblib')
 sgd = load('SGD.joblib')
 
-predict_ols = pd.Series(ols.predict(np_final)).rename('OLS').map('${:,.2f}'.format)
-predict_ridge = pd.Series(ridge.predict(np_final)).rename('Ridge').map('${:,.2f}'.format)
-predict_sgd = pd.Series(sgd.predict(np_final)).rename('SGD').map('${:,.2f}'.format)
+predict_ols = pd.Series(ols.predict(np_final)).apply(lambda x: x**2).rename('OLS').map('${:,.2f}'.format)
+predict_ridge = pd.Series(ridge.predict(np_final)).apply(lambda x: x**2).rename('Ridge').map('${:,.2f}'.format)
+predict_sgd = pd.Series(sgd.predict(np_final)).apply(lambda x: x**2).rename('SGD').map('${:,.2f}'.format)
 
 print(pd.concat([df_ID, predict_ols, predict_ridge, predict_sgd], axis=1))
 
