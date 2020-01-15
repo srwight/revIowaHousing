@@ -26,7 +26,7 @@ from sklearn.model_selection import train_test_split
 
 # Read the dataset, get our predicted variable, then remove it from the training set
 df_in = pd.read_csv('train.csv')
-SalePrice = df_in.SalePrice
+SalePrice = df_in.SalePrice.apply(lambda x: x**0.5)
 df_in.drop('SalePrice',axis=1,inplace=True)
 
 # Remove columns we decided not to use
@@ -87,9 +87,9 @@ dump(scaler,'normalizer.joblib')
 
 ### PCA ###
 
-# pcaobj = PCA(n_components=0.95)
-# np_final = pcaobj.fit_transform(np_final)
-# dump(pcaobj, 'pcaObject.joblib')
+pcaobj = PCA(n_components=0.95)
+np_final = pcaobj.fit_transform(np_final)
+dump(pcaobj, 'pcaObject.joblib')
 
 ### TRAIN/TEST SPLIT ###
 
