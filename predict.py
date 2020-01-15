@@ -7,6 +7,7 @@ from unique.cond_2hot import conditions_2hot
 from unique.bsmtfn_type import basement_type
 
 df_in = pd.read_csv('test.csv')
+df_ID = df_in.Id
 
 df_in.drop(['Id','Utilities','Heating', 'KitchenAbvGr', '3SsnPorch','Exterior2nd','TotalBsmtSF'], axis=1, inplace=True)
 
@@ -52,9 +53,9 @@ ols = load('OLS.joblib')
 ridge = load('Ridge.joblib')
 sgd = load('SGD.joblib')
 
-predict_ols = pd.Series(ols.predict(np_final)).rename('OLS')
-predict_ridge = pd.Series(ridge.predict(np_final)).rename('Ridge')
-predict_sgd = pd.Series(sgd.predict(np_final)).rename('SGD')
+predict_ols = pd.Series(ols.predict(np_final)).rename('OLS').map('${:,.2f}'.format)
+predict_ridge = pd.Series(ridge.predict(np_final)).rename('Ridge').map('${:,.2f}'.format)
+predict_sgd = pd.Series(sgd.predict(np_final)).rename('SGD').map('${:,.2f}'.format)
 
-print(pd.concat([predict_ols,predict_ridge, predict_sgd], axis=1))
+print(pd.concat([df_ID, predict_ols, predict_ridge, predict_sgd], axis=1))
 
