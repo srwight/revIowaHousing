@@ -6,7 +6,7 @@ from sklearn import linear_model
 #Initial Implementation: Desmond
 #Algorithm Analysis: John
 #Refactoring/Final Implementation: Davis
-#Data Analysis: Corey, Ragy
+#Data Analysis/Statistics: Corey, Ragy
 #Algorithm Research: George A.
 
 #Ragy, George A., Davis, Corey, John, Desmond
