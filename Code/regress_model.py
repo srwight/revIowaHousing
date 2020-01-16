@@ -1,3 +1,5 @@
+#Additional assistance for this file came from the OLS group: Corey, George A., John, Ragy, and Davis
+
 '''Each of the model functions drops the SalePrice column so do not run them sequentially. '''
 import pandas as pd
 from sklearn.model_selection import train_test_split
