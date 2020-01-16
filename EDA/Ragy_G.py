@@ -4,7 +4,7 @@
 # In[30]:
 
 
-"""" Ragy GadElkareem		Feature Set number:
+"""" Ragy GadElkareem		Features :
 ExterQual	 Evaluates the quality of the material on the exterior 			
 ExterCond	 Evaluates the present condition of the material on the exterior			
 Foundation	 Type of foundation
@@ -12,25 +12,14 @@ BsmtQual Evaluates the height of the basement Importing packages """
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-get_ipython().run_line_magic('matplotlib', 'inline')
 data = pd.read_csv("house_price.csv")
 data.columns
-
-
-# In[31]:
-
-
-# save all categorical columns in list
-categorical_columns = [col for col in data.columns.values if data[col].dtype == 'object']
-
-# dataframe with categorical features
-data_cat = data[categorical_columns]
 
 
 # In[32]:
 
 
-# Using describe function in numeric dataframe 
+# Using describe function 
 data_cat.describe()
 
 
@@ -95,21 +84,6 @@ my_features.isna().sum()
 
 my_features.head()
 
-
-# In[43]:
-
-
-# GET THIS
-##my_dummy_features = pd.concat([pd.get_dummies(my_features[['ExterQual','ExterCond','Foundation','BsmtQual']]), my_features[['ExterQual','ExterCond','Foundation','BsmtQual']]])
-my_dummy_features = pd.get_dummies(my_features)
-
-# Still to do: Get Logarithms if you need them
-
-
-# In[44]:
-
-
-my_dummy_features.head()
 
 
 # In[45]:
