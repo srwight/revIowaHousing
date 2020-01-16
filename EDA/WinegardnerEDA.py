@@ -77,6 +77,15 @@ missing_data = pd.concat([total_missing_value, percent_of_missign_value], axis=1
 missing_data.head(20)
 df_house_price["FireplaceQu"] = df_house_price["FireplaceQu"].fillna("None")
 
+sns.factorplot("Fireplaces","SalePrice",data=raw_data,hue="FireplaceQu");
+sns.factorplot()
+
+
+
+
+
+11:14
+import seaborn as sns
 
 Number of Numerical features:  38
 Number of Categorical features:  43
