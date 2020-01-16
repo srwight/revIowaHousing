@@ -17,10 +17,15 @@ data.columns
 
 
 # In[32]:
+# save all categorical columns in list
+categorical_columns = [col for col in data.columns.values if data[col].dtype == 'object']
+
+# dataframe with categorical features
+data_cat = data[categorical_columns]
 
 
-# Using describe function 
-data_cat.describe()
+# Printing 5 head observation in categorical dataframe
+data_cat.head()
 
 
 # In[33]:
