@@ -1,111 +1,199 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Jan  3 15:44:42 2020
+Created on Tue Dec 24 10:04:37 2019
 
 @author: hanan
+
+Make a Python function that takes in the whole Dataframe,
+processes it, and returns a Dataframe with your features in it.
+Avoid deleting rows from the dataset.
 """
 
-__doc__ = """
+import pandas as pd
+#import seaborn as sns
+#import matplotlib.pyplot as plt
 
-Dependencies used (subject to change): pandas, numpy, scipy.stats
+# Key:
+# SalePrice -> price of the house
+# GarageCars -> size of the garage in terms of car capacity
+# GarageArea -> size of the garage in square feet
+# OpenPorchSF -> size of open porch area in square feet
+# WoodDeckSF -> size of wood deck area in square feet
 
-This .py file is meant to handle these 4 features/variables in feature engineering:
-    GarageArea - the size/area of the garage in square feet - continuous
-    GarageCars - the car capacity of the garage (number of cars) - continuous
-    OpenPorchSF - the size/area of the open porch in square feet - continuous
-    WoodDeckSF - the size/area of the wood deck in square feet - continuous
-    
-The function named feature_extract is where the dataset will be passed in & the 4 features
-will be extracted for processing, including handling of missing values & outliers
-and possibly normalization/handling of skewed data.
-""" 
+# Notes: Comment/uncomment print & plot lines of code as necessary to 
+# view the data & results as it gets modified/cleaned
 
-import pandas as pd # import pandas in order to be able to bring in the dataset
-import numpy as np # import numpy to be able to take the log transformation
-from scipy.stats import skew # import skew to be able to handle skew 
+# Another note: Normalize & handle skewness in numerical variables and 
+# do one-hotting in categorical variables
 
-def feature_extract(dataset:pd.DataFrame) -> pd.DataFrame:
-    """
-    A function for the extraction of these 4 variables/features:
-        GarageArea
-        GarageCars
-        OpenPorchSF
-        WoodDeckSF
+# Load the dataset
+HPdf = pd.read_csv('C:/Users/hanan/Desktop/BatchProject/Dataset/train.csv')
+
+# Perform univariate analysis on GarageCars, GarageArea, OpenPorchSF, WoodDeckSF
+# Perform bivariate analysis between the 4 chosen features & the target feature SalePrice
+
+# Set target feature: SalePrice
+target = HPdf['SalePrice']
+
+# Selecting features: GarageCars, GarageArea, WoodDeckSF, OpenPorchSF
+assigned = HPdf[['SalePrice', 'GarageArea', 'GarageCars', 'OpenPorchSF', 'WoodDeckSF']]
+
+# Data Exploration
+#print("Info about the full dataset:\n")
+#print(HPdf.info())
+#print("\nShape of the full dataset:\n")
+#print(HPdf.shape)
+#print("\nInfo about the selected columns:\n")
+#print(assigned.info())
+#print("\nShape of the selected columns:\n")
+#print(assigned.shape)
+
+# Handling missing values in the data
+for col in assigned.columns.values:
+    percentage_total = assigned[col].sum() * 0.3 # set a threshold for the acceptable percentage of missing values in a column (usually 25 or 30 percent)
+    missval = assigned[col].isnull().sum()
+    if missval > percentage_total:
+        assigned = assigned.drop(col, axis = 1)
+    else:
+        assigned = assigned.fillna(assigned[col].mean())   
+
+# Handling outliers in the data -> I filtered for each feature sequentially.
+# Note: I visualized the 5 chosen features to look for outliers
+# before cleaning the data
+
+# Filter outliers based on SalePrice 
+#spfiltered = assigned[assigned['SalePrice'] <= 700000]
+#print(spfiltered.shape)
+
+# Filter outliers based on GarageArea
+#gafiltered = spfiltered[spfiltered['GarageArea'] <= 1300]
+#print(gafiltered.shape)
+
+# Filter outliers based on Garage Cars
+#gcfiltered = gafiltered[gafiltered['GarageCars'] < 4]
+#print(gcfiltered.shape)
+
+# Filter outliers based on OpenPorchSF
+#opfiltered = gcfiltered[gcfiltered['OpenPorchSF'] <= 450]
+#print(opfiltered.shape)
+
+# Filter outliers based on WoodDeckSF
+#wdfiltered = opfiltered[opfiltered['WoodDeckSF'] < 800]
+#print(wdfiltered.shape)
+
+import numpy as np
+from scipy.stats import skew
+cols = ['GarageArea', 'GarageCars', 'OpenPorchSF', 'WoodDeckSF']
+myDF = assigned[cols]
+
+#for col in cols:
+#    mean = myDF[col].mean()
+#    maxval = 3 * myDF[col].std() + mean
+#    minval = -3 * myDF[col].std() + mean
+#    myDF[col].clip(minval, maxval)    
+
+for ga in myDF['GarageArea']: # Garage area in square feet
+    if (ga >= 1300):
+        myDF.replace(to_replace = ga, value = 1300)
         
-    Parameters
-    ----------
-    dataset : pd.DataFrame
-        This is the dataset that will be passed into the function (as a parameter) 
-        for processing.
+for gc in myDF['GarageCars']: # Garage car capacity
+    if (gc >= 4):
+        myDF['GarageCars'].replace(to_replace = gc, value = 3)
+            
+for op in myDF['OpenPorchSF']: # Open porch area in square feet
+    if (op > 450):
+        myDF['OpenPorchSF'].replace(to_replace = op, value = 440)
+            
+for wd in myDF['WoodDeckSF']: # Wood deck area in square feet
+    if (wd >= 800):
+        myDF['WoodDeckSF'].replace(to_replace = wd, value = 790)
 
-    Returns
-    -------
-    myFeatures : pd.DataFrame
-        This is the DataFrame containing the 4 selected features (mentioned 
-        above) that will be returned as output.
-
-    """
-    
-    # Picking out the assigned columns & putting them into a separate DataFrame
-    myFeatures = dataset[['GarageArea', 'GarageCars', 'OpenPorchSF', 'WoodDeckSF']]
-    
-    # Handling missing values by filling/imputing them with the median
-    # Hard-code the mean rather than calculating it dynamically? 
-    # (no assumptions can be made about the data, to be safe)
-    #ga_mean = 472.98
-    #gc_mean = 2
-    #op_mean = 46.66
-    #wd_mean = 94.24
-    
-    for c1 in myFeatures.columns.values: # Fill the NA values with the median
-        #print(myFeatures[c1].median())
-        myFeatures = myFeatures.fillna(myFeatures[c1].median())
-
-    """
-    Handling outliers by replacing the values of those outliers
-    with the value used to filter the data or with some value close to it.
-    I looked at the scatterplots between each feature and SalePrice & 
-    estimated the max value of each feature(not including outliers).
-    These max values were what I used to determine the filtering values.
-    """
+feat_skew = myDF.apply(skew)
+feat_skew = feat_skew[feat_skew > 0.75]
+loggedDF = np.log(myDF[feat_skew.index] + 1)
+myDF = myDF.drop(feat_skew.index, axis = 1)
+myDF = pd.concat([myDF, loggedDF], axis = 1)
         
-    for ga in myFeatures['GarageArea']: # Garage area in square feet
-        if (ga >= 1300):
-            myFeatures['GarageArea'].replace(to_replace = ga, value = 1300)
+print("GarageArea skew: %s\n" % myDF['GarageArea'].skew())
+print("GarageCars skew: %s\n" % myDF['GarageCars'].skew())
+print("OpenPorchSF skew: %s\n" % myDF['OpenPorchSF'].skew())
+print("WoodDeckSF skew: %s\n" % myDF['WoodDeckSF'].skew())
         
-    for gc in myFeatures['GarageCars']: # Garage car capacity
-        if (gc >= 4):
-            myFeatures['GarageCars'].replace(to_replace = gc, value = 3)
-            
-    for op in myFeatures['OpenPorchSF']: # Open porch area in square feet
-        if (op > 450):
-            myFeatures['OpenPorchSF'].replace(to_replace = op, value = 440)
-            
-    for wd in myFeatures['WoodDeckSF']: # Wood deck area in square feet
-        if (wd >= 800):
-            myFeatures['WoodDeckSF'].replace(to_replace = wd, value = 790)
-            
-    # Handle skewness and/or normalization
-    handle_skew = myFeatures.apply(skew)
-    handle_skew = handle_skew[handle_skew > 0.75]
-    loggedDF = np.log(myFeatures[handle_skew.index] + 1)
-    myFeatures = myFeatures.drop(handle_skew.index, axis = 1)
-    myFeatures = pd.concat([myFeatures, loggedDF], axis = 1)
-    
-    # Returning the assigned features (still as a DataFrame) after processing them
-    return myFeatures
+#sns.distplot(myDF['GarageArea'], hist = True)
+#sns.distplot(myDF['GarageCars'], hist = True)
+#sns.distplot(myDF['OpenPorchSF'], hist = True)
+#sns.distplot(myDF['WoodDeckSF'], hist = True)
 
-# Code that's only meant to be used for testing
-# This only runs when this .py file is the main file, not when it's imported.           
-def main():
-    df = pd.read_csv("C:/Users/hanan/Desktop/BatchProject/Dataset/tagged_train.csv")
-    extracted = feature_extract(df)
-    print("Extracted features: \n%s\n" % extracted)
-    print("GarageArea skew: %s\n" % extracted['GarageArea'].skew())
-    print("GarageCars skew: %s\n" % extracted['GarageCars'].skew())
-    print("OpenPorchSF skew: %s\n" % extracted['OpenPorchSF'].skew())
-    print("WoodDeckSF skew: %s\n" % extracted['WoodDeckSF'].skew())     
-    
-if __name__ == '__main__':
-    main()
-    
+# Assigning each column to its own variable
+#sp = wdfiltered['SalePrice']
+#ga = wdfiltered['GarageArea']
+#gc = wdfiltered['GarageCars']
+#op = wdfiltered['OpenPorchSF']
+#wd = wdfiltered['WoodDeckSF']
+#print("GarageArea skewness and kurtosis: %s %s" % (ga.skew(), ga.kurt()))
+#print("GarageCars skewness and kurtosis: %s %s" % (gc.skew(), gc.kurt()))
+#print("OpenPorchSF skewness and kurtosis: %s %s" % (op.skew(), op.kurt()))
+#print("WoodDeckSF skewness and kurtosis: %s %s" % (wd.skew(), wd.kurt()))
+
+# Univariate Analysis of each feature
+
+# SalePrice UA -> requires log transformation to fit into normal distribution because of left skew
+#sns.distplot(sp, hist = True) # SalePrice Histogram before log transformation
+#sp_log = np.log(sp) # apply log transformation to SalePrice
+#sns.distplot(sp_log, hist = True) # SalePrice Histogram after log transformation
+
+# GarageArea UA
+#sns.distplot(ga, hist = True)
+
+# GarageCars UA
+#sns.distplot(gc, hist = True)
+
+# OpenPorchSF UA
+#sns.distplot(op, hist = True)
+
+# WoodDeckSF UA
+#sns.distplot(wd, hist = True)
+
+# Bivariate Analysis between SalePrice and each feature
+colors = 'black'
+
+# Correlation matrix with SalePrice and the 4 features
+#corr = wdfiltered.corr()
+#sns.heatmap(corr, cmap = 'coolwarm', annot = True)
+
+# Scatter plot with SalePrice & GarageArea
+#plt.figure(figsize = (20, 20))
+#plt.scatter(ga, sp, c = colors)
+#plt.title("House Price vs. Garage Area")
+#plt.xlabel("Garage Area (in sq. ft.)")
+#plt.ylabel("House Price")
+#plt.yticks(np.arange(0, 700000, 50000))
+#plt.show()
+
+# Scatter plot with SalePrice & GarageCars
+#plt.figure(figsize = (20, 20))
+#plt.scatter(gc, sp, s = 10, c = colors)
+#plt.title("House Price vs. Garage Car Capacity")
+#plt.xlabel("Garage Car Capacity")
+#plt.ylabel("House Price")
+#plt.xticks(np.arange(0, 5, 1))
+#plt.yticks(np.arange(0, 700000, 50000))
+#plt.show()
+
+# Scatter plot with SalePrice & OpenPorchSF
+#plt.figure(figsize = (20, 20))
+#plt.scatter(op, sp, c = colors)
+#plt.title("House Price vs. Open Porch Area")
+#plt.xlabel("Open Porch Area (in sq. ft.)")
+#plt.ylabel("House Price")
+#plt.yticks(np.arange(0, 700000, 50000))
+#plt.show()
+
+# Scatter plot with SalePrice & WoodDeckSF
+#plt.figure(figsize = (20, 20))
+#plt.scatter(wd, sp, c = colors)
+#plt.title("House Price vs. Wood Deck Area")
+#plt.xlabel("Wood Deck Area (in sq. ft.)")
+#plt.ylabel("House Price")
+#plt.yticks(np.arange(0, 700000, 50000))
+#plt.show()
